@@ -25,8 +25,9 @@ services:
     autoDeploy: true
 
   # Frontend static site
-  - type: static
+  - type: web
     name: marketplace-frontend
+    env: static
     buildCommand: cd marketplace-frontend && npm install && npm run build
     staticPublishPath: ./marketplace-frontend/build
     envVars:
