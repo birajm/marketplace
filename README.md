@@ -1,109 +1,129 @@
 # Marketplace Application
 
-A full-stack e-commerce marketplace application built with Django and React.
+A full-stack marketplace application built with Django and React.
 
 ## Project Structure
 
-- `marketplace_project/` - Django backend
-- `marketplace-frontend/` - React frontend
+```
+marketplace/
+├── marketplace_project/     # Django backend
+├── marketplace-frontend/    # React frontend
+├── .env                    # Environment variables
+├── docker-compose.yml      # Docker development setup
+└── render.yaml            # Render deployment configuration
+```
 
-## Local Development
+## Prerequisites
+
+- Python 3.11+
+- Node.js 18+
+- Docker (optional)
+- Git
+
+## Local Development Setup
 
 ### Backend Setup
 
-1. Navigate to the backend directory:
-   ```
-   cd marketplace_project
-   ```
+1. Create and activate virtual environment:
+```bash
+cd marketplace_project
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-2. Create and activate a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your settings
+```
 
 4. Run migrations:
-   ```
-   python manage.py migrate
-   ```
+```bash
+python manage.py migrate
+```
 
-5. Create a superuser:
-   ```
-   python manage.py createsuperuser
-   ```
-
-6. Run the development server:
-   ```
-   python manage.py runserver
-   ```
+5. Start the development server:
+```bash
+python manage.py runserver
+```
 
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
-   ```
-   cd marketplace-frontend
-   ```
+1. Install dependencies:
+```bash
+cd marketplace-frontend
+npm install
+```
 
-2. Install dependencies:
-   ```
-   npm install
-   ```
+2. Start the development server:
+```bash
+npm start
+```
 
-3. Start the development server:
-   ```
-   npm start
-   ```
+### Using Docker
 
-## Deployment to Render
+1. Build and start the containers:
+```bash
+docker-compose up --build
+```
 
-### Backend Deployment
+2. Access the application:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000/api
 
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Configure the service:
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `gunicorn backend.wsgi:application --log-file -`
-   - Environment Variables:
-     - `PYTHON_VERSION`: 3.11.0
-     - `SECRET_KEY`: (Generate a secure key)
-     - `DEBUG`: False
-     - `ALLOWED_HOSTS`: .onrender.com
-     - `CORS_ALLOWED_ORIGINS`: https://marketplace-frontend.onrender.com
-     - `DATABASE_URL`: (Add your PostgreSQL database URL)
+## Deployment
 
-### Frontend Deployment
+The application is configured for deployment on Render using the `render.yaml` configuration.
 
-1. Create a new Static Site on Render
-2. Connect your GitHub repository
-3. Configure the service:
-   - Build Command: `npm install && npm run build`
-   - Publish Directory: `build`
-   - Environment Variables:
-     - `NODE_VERSION`: 18.17.0
-     - `REACT_APP_API_URL`: https://marketplace-backend.onrender.com/api
+### Manual Deployment Steps
+
+1. Push your code to GitHub:
+```bash
+git add .
+git commit -m "Prepare for deployment"
+git push origin main
+```
+
+2. On Render:
+- Create a new Web Service
+- Connect your GitHub repository
+- Use the following settings:
+  - Build Command: `cd marketplace_project && pip install -r requirements.txt`
+  - Start Command: `cd marketplace_project && gunicorn backend.wsgi:application --log-file -`
+  - Environment Variables: Configure as specified in render.yaml
+
+3. Deploy the frontend:
+- Create a new Static Site
+- Connect your GitHub repository
+- Use the following settings:
+  - Build Command: `cd marketplace-frontend && npm install && npm run build`
+  - Publish Directory: `marketplace-frontend/build`
 
 ## Environment Variables
 
 ### Backend (.env)
-
-```
-DEBUG=True
-SECRET_KEY=your-secret-key
-ALLOWED_HOSTS=localhost,127.0.0.1
-CORS_ALLOWED_ORIGINS=http://localhost:3000
-```
+- DEBUG
+- SECRET_KEY
+- ALLOWED_HOSTS
+- CORS_ALLOWED_ORIGINS
+- DATABASE_URL
 
 ### Frontend (.env)
+- REACT_APP_API_URL
 
-```
-REACT_APP_API_URL=http://localhost:8000/api
-```
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
-MIT 
+This project is licensed under the MIT License. 

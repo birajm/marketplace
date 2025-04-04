@@ -1,18 +1,18 @@
 services:
-  # Backend API service
+  # Backend Django API Service
   - type: web
     name: marketplace-backend
     env: python
-    region: oregon
-    buildCommand: cd marketplace_project && pip install -r requirements.txt
-    startCommand: cd marketplace_project && gunicorn backend.wsgi:application --log-file -
+    rootDir: marketplace_project
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn backend.wsgi:application --log-file -
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
+      - key: DEBUG
+        value: False
       - key: SECRET_KEY
         generateValue: true
-      - key: DEBUG
-        value: false
       - key: ALLOWED_HOSTS
         value: .onrender.com
       - key: CORS_ALLOWED_ORIGINS
@@ -24,13 +24,12 @@ services:
     healthCheckPath: /api/health/
     autoDeploy: true
 
-  # Frontend static site
-  - type: web
+  # Frontend React Service
+  - type: static
     name: marketplace-frontend
-    env: static
-    region: oregon
-    buildCommand: cd marketplace-frontend && npm install && npm run build
-    staticPublishPath: ./marketplace-frontend/build
+    rootDir: marketplace-frontend
+    buildCommand: npm install && npm run build
+    publishDir: build
     envVars:
       - key: NODE_VERSION
         value: 18.17.0
@@ -41,5 +40,6 @@ services:
 
 databases:
   - name: marketplace-db
-    region: oregon
+    databaseName: marketplace
+    user: marketplace
     plan: free 
