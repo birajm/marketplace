@@ -16,12 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from products.views import CategoryViewSet, ProductViewSet
 from users.views import UserViewSet, VendorProfileViewSet
 from orders.views import OrderViewSet, OrderItemViewSet
-from django.http import HttpResponse
 
+# Health check endpoint
+@api_view(['GET'])
+def health_check(request):
+    return Response({"status": "ok"})
+
+# Create a router and register our viewsets with it
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'products', ProductViewSet)
@@ -30,12 +39,12 @@ router.register(r'vendors', VendorProfileViewSet)
 router.register(r'orders', OrderViewSet, basename='order')
 router.register(r'order-items', OrderItemViewSet)
 
-def health_check(request):
-    return HttpResponse("OK")
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls')),
     path('api/health/', health_check, name='health_check'),
+    path('api-auth/', include('rest_framework.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
